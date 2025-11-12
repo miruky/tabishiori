@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="logo-title">
+  <title id="logo-title">tabishiori - 折りたたんだ地図に旅路を描いたロゴ</title>
+  <style>
+    .bg { fill: #f4f5f1; }
+    .ink { stroke: #23282b; }
+    .accent { stroke: #2f6690; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #171a17; }
+      .ink { stroke: #e7eae3; }
+      .accent { stroke: #7fb3d8; }
+    }
+  </style>
+  <rect class="bg" width="128" height="128" rx="28"/>
+  <g fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path class="ink" d="M20 38 48 28l32 10 28-10v62l-28 10-32-10-28 10z"/>
+    <path class="ink" d="M48 28v62"/>
+    <path class="ink" d="M80 38v62"/>
+    <path class="accent" d="M30 66c10-13 26-5 34 2s20 11 30-4" stroke-dasharray="12 11"/>
+  </g>
+</svg>
