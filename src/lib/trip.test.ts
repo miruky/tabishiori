@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { seedTrip } from './seed';
 import {
+  MAX_DAYS,
   createStore,
   dayDate,
   dayOrdinal,
   deserializeTrip,
+  duplicateDay,
   emptyTrip,
   isTrip,
   serializeTrip,
+  type DayPlan,
 } from './trip';
 
 describe('dayOrdinal / dayDate', () => {
@@ -63,6 +66,29 @@ describe('isTrip / deserializeTrip', () => {
       days: [{ entries: [{ time: '', kind: 'walk', title: 'x', note: '' }] }],
     };
     expect(isTrip(badEntry)).toBe(false);
+  });
+});
+
+describe('duplicateDay', () => {
+  it('指定した日を直後に深いコピーで挿入する', () => {
+    const days = seedTrip(0).days;
+    const out = duplicateDay(days, 0);
+    expect(out).toHaveLength(days.length + 1);
+    expect(out[1]).toEqual(days[0]);
+    expect(out[1]).not.toBe(days[0]);
+    expect(out[1]?.entries[0]).not.toBe(days[0]?.entries[0]);
+    // 元の配列は変更しない
+    expect(days).toHaveLength(seedTrip(0).days.length);
+  });
+
+  it('範囲外の指定では元の配列を返す', () => {
+    const days = seedTrip(0).days;
+    expect(duplicateDay(days, 99)).toBe(days);
+  });
+
+  it('日数が上限に達していると複製しない', () => {
+    const max: DayPlan[] = Array.from({ length: MAX_DAYS }, () => ({ entries: [] }));
+    expect(duplicateDay(max, 0)).toBe(max);
   });
 });
 
