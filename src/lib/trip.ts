@@ -70,6 +70,18 @@ export function emptyTrip(): Trip {
   };
 }
 
+/**
+ * 指定した日を複製し、直後に挿入した新しい配列を返す。
+ * 予定はそれぞれコピーするので、複製後の編集は元の日に影響しない。
+ * 範囲外や日数上限(MAX_DAYS)に達している場合は元の配列をそのまま返す。
+ */
+export function duplicateDay(days: DayPlan[], index: number): DayPlan[] {
+  const source = days[index];
+  if (!source || days.length >= MAX_DAYS) return days;
+  const copy: DayPlan = { entries: source.entries.map((entry) => ({ ...entry })) };
+  return [...days.slice(0, index + 1), copy, ...days.slice(index + 1)];
+}
+
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'] as const;
 
 /** 「1日目」「2日目」 */
