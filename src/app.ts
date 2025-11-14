@@ -8,6 +8,7 @@ import {
   MAX_DAYS,
   dayDate,
   dayOrdinal,
+  deserializeTrip,
   emptyTrip,
   type BudgetKind,
   type EntryKind,
@@ -17,6 +18,7 @@ import {
 import { normalizeTimeText, sortByTime } from './lib/time';
 import { budgetByKind, budgetTotal, formatYen, parseAmount } from './lib/budget';
 import { decodeTrip, shareHash, sharePayloadFromHash } from './lib/share';
+import { backupFilename, backupJson } from './lib/backup';
 import { icons } from './icons';
 
 const ESCAPES: Record<string, string> = {
@@ -247,6 +249,25 @@ export function createApp({ root, store, initialTrip }: AppDeps): void {
       </section>`;
   }
 
+  function backupPanel(): string {
+    return `
+      <section class="panel">
+        <div class="panel-head">
+          <h2>バックアップ</h2>
+        </div>
+        <p class="hint">しおりをJSONファイルに書き出して保管したり、別の端末で読み込めます。</p>
+        <div class="backup-actions">
+          <button type="button" class="button" id="export-json">
+            ${icons.download}<span>ファイルに書き出す</span></button>
+          <button type="button" class="button" id="import-json">
+            ${icons.upload}<span>ファイルから読み込む</span></button>
+          <input type="file" id="import-file" class="visually-hidden"
+            accept="application/json,.json" aria-label="しおりのJSONファイル" />
+        </div>
+        <p class="hint" id="import-msg" role="status" aria-live="polite"></p>
+      </section>`;
+  }
+
   function editView(): string {
     return `
       <section class="view">
@@ -264,6 +285,7 @@ export function createApp({ root, store, initialTrip }: AppDeps): void {
           <label class="field"><span class="visually-hidden">メモ</span>
             <textarea id="trip-memo" rows="3" placeholder="雨の場合の代替案、集合場所など">${esc(trip.memo)}</textarea></label>
         </section>
+        ${backupPanel()}
         <div class="edit-footer">
           <a class="button primary" href="#/shiori">${icons.book}<span>しおりを見る</span></a>
           <button type="button" class="button danger ${confirming === 'reset' ? 'confirming' : ''}" id="reset">
@@ -410,6 +432,37 @@ export function createApp({ root, store, initialTrip }: AppDeps): void {
       trip.budget.push({ label, kind: String(data.get('kind') ?? 'other') as BudgetKind, amount });
       commit();
       root.querySelector<HTMLInputElement>('#add-budget-label')?.focus();
+    });
+
+    root.querySelector('#export-json')?.addEventListener('click', () => {
+      const blob = new Blob([backupJson(trip)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = backupFilename(trip);
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    const importFile = root.querySelector<HTMLInputElement>('#import-file');
+    root.querySelector('#import-json')?.addEventListener('click', () => importFile?.click());
+    importFile?.addEventListener('change', () => {
+      const file = importFile.files?.[0];
+      if (!file) return;
+      void file.text().then((text) => {
+        const imported = deserializeTrip(text);
+        if (!imported) {
+          const msg = root.querySelector('#import-msg');
+          if (msg) {
+            msg.textContent =
+              '読み込めませんでした。tabishioriが書き出したJSONか確認してください。';
+          }
+          importFile.value = '';
+          return;
+        }
+        trip = imported;
+        commit();
+      });
     });
 
     root.querySelector('#reset')?.addEventListener('click', () => {
