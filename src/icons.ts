@@ -28,6 +28,8 @@ export const icons = {
       '<rect x="7" y="13.5" width="10" height="7" rx="1"/>',
   ),
   import: svg('<path d="M12 4v10"/><path d="m8 10 4 4 4-4"/><path d="M4.5 18.5h15"/>'),
+  download: svg('<path d="M12 3.5v9.5"/><path d="m8 9.5 4 4 4-4"/><path d="M4.5 19.5h15"/>'),
+  upload: svg('<path d="M12 14V4.5"/><path d="m8 8.5 4-4 4 4"/><path d="M4.5 19.5h15"/>'),
   pencil: svg('<path d="m16.9 3.8 3.3 3.3L8.6 18.7 4 20l1.3-4.6z"/><path d="m14.5 6.2 3.3 3.3"/>'),
   book: svg(
     '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15.5H6.5A2.5 2.5 0 0 0 4 21z"/>' +
