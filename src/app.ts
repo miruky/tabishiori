@@ -9,6 +9,7 @@ import {
   dayDate,
   dayOrdinal,
   deserializeTrip,
+  duplicateDay,
   emptyTrip,
   type BudgetKind,
   type EntryKind,
@@ -167,13 +168,17 @@ export function createApp({ root, store, initialTrip }: AppDeps): void {
       <section class="panel day-panel">
         <div class="panel-head">
           <h3>${dayOrdinal(dayIndex)}${date ? `<span class="day-date">${date}</span>` : ''}</h3>
-          ${
-            trip.days.length > 1
-              ? `<button type="button" class="button small danger ${confirming === confirmKey ? 'confirming' : ''}"
-                  id="del-day-${dayIndex}" data-del-day="${dayIndex}">
-                  ${icons.trash}<span>${confirming === confirmKey ? 'もう一度押すと削除' : '日を削除'}</span></button>`
-              : ''
-          }
+          <div class="day-actions">
+            <button type="button" class="button small" id="dup-day-${dayIndex}" data-dup-day="${dayIndex}"
+              ${trip.days.length >= MAX_DAYS ? 'disabled' : ''}>${icons.copy}<span>複製</span></button>
+            ${
+              trip.days.length > 1
+                ? `<button type="button" class="button small danger ${confirming === confirmKey ? 'confirming' : ''}"
+                    id="del-day-${dayIndex}" data-del-day="${dayIndex}">
+                    ${icons.trash}<span>${confirming === confirmKey ? 'もう一度押すと削除' : '日を削除'}</span></button>`
+                : ''
+            }
+          </div>
         </div>
         ${day.entries.length > 0 ? `<ul class="entries">${rows}</ul>` : '<p class="hint">まだ予定がありません。下の行から追加してください。</p>'}
         <form class="entry-add" data-add-entry="${dayIndex}">
@@ -312,6 +317,13 @@ export function createApp({ root, store, initialTrip }: AppDeps): void {
       trip.days.push({ entries: [] });
       commit();
     });
+
+    for (const el of root.querySelectorAll<HTMLElement>('[data-dup-day]')) {
+      el.addEventListener('click', () => {
+        trip.days = duplicateDay(trip.days, Number(el.dataset.dupDay));
+        commit();
+      });
+    }
 
     for (const el of root.querySelectorAll<HTMLElement>('[data-del-day]')) {
       el.addEventListener('click', () => {
