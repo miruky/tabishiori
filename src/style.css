@@ -11,8 +11,9 @@
   --accent: #2f6690;
   --accent-soft: #e2ecf3;
   --danger: #a93226;
-  --shadow: 0 8px 24px rgb(35 40 43 / 0.07);
+  --shadow: 0 1px 2px rgb(35 40 43 / 0.04), 0 14px 32px rgb(35 40 43 / 0.06);
   --radius: 14px;
+  --display: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -495,6 +496,12 @@ svg {
   flex-wrap: wrap;
 }
 
+.backup-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 /* ---- 持ち物・予算の編集 ---- */
 
 .packing,
@@ -617,7 +624,9 @@ svg {
 
 .sheet-head h1 {
   margin: 0 0 4px;
-  font-size: 1.8rem;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 2rem;
   letter-spacing: 0.04em;
 }
 
