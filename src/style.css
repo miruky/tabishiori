@@ -52,6 +52,8 @@ body {
 h1,
 h2,
 h3 {
+  font-family: var(--display);
+  font-weight: 600;
   line-height: 1.3;
   letter-spacing: 0.01em;
 }
@@ -373,6 +375,12 @@ svg {
   margin: 0;
 }
 
+.day-actions {
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .day-date {
   margin-left: 10px;
   color: var(--accent);
@@ -678,6 +686,44 @@ svg {
   font-weight: 600;
 }
 
+/* 種別ごとの淡い色分け。低彩度で塗り分け、ひと目で予定の性質が掴めるようにする。
+   観光は地のアクセント色をそのまま使う。 */
+.kind-move {
+  background: #e3eef0;
+  color: #2b6b73;
+}
+.kind-meal {
+  background: #f6e9da;
+  color: #99571f;
+}
+.kind-stay {
+  background: #ece4f2;
+  color: #6b4a86;
+}
+.kind-note {
+  background: #e9ebe6;
+  color: #59615a;
+}
+
+@media (prefers-color-scheme: dark) {
+  .kind-move {
+    background: #1f3338;
+    color: #8fc6cf;
+  }
+  .kind-meal {
+    background: #382e20;
+    color: #e0a86a;
+  }
+  .kind-stay {
+    background: #2e2740;
+    color: #b69ad6;
+  }
+  .kind-note {
+    background: #2a2e28;
+    color: #aab3a6;
+  }
+}
+
 .sheet-note {
   grid-column: 3;
   color: var(--muted);
@@ -805,6 +851,17 @@ svg {
   .sheet-day,
   .sheet-block {
     break-inside: avoid;
+  }
+
+  /* 紙では地色を載せず、種別は文字だけで示す */
+  .kind,
+  .kind-move,
+  .kind-meal,
+  .kind-stay,
+  .kind-note {
+    background: none;
+    color: var(--accent);
+    padding-left: 0;
   }
 }
 
